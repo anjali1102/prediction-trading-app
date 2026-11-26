@@ -38,9 +38,47 @@ export async function signup(req: Request): Promise<Response> {
     };
 
     return Response.json(response);
-  } catch (err: unknown) {
+  } catch (err) {
     console.error("Error during signup:", err);
     const response: SignupFailureResponse = { message: "Signup failed" };
     return Response.json(response, { status: 500 });
+  }
+}
+
+export async function login(req: Request): Promise<Response> {
+  try {
+    const { username, password } = await req.json();
+
+    const IsLoginUserExist = await User.findOne({ username: username });
+    if (!IsLoginUserExist) {
+      return Response.json(
+        { message: "User not found, Please Signup" },
+        { status: 404 },
+      );
+    }
+
+    const isPasswordValid = await bcrypt.compare(
+      password,
+      IsLoginUserExist.password,
+    );
+    if (!isPasswordValid) {
+      return Response.json({ message: "Invalid password" }, { status: 401 });
+    }
+
+    return Response.json({
+      message: "Login successful",
+      status: 200,
+      data: {
+        userid: IsLoginUserExist._id,
+        username: IsLoginUserExist.username,
+      },
+    });
+  } catch (err) {
+    return Response.json(
+      {
+        message: "Login failed",
+      },
+      { status: 500 },
+    );
   }
 }

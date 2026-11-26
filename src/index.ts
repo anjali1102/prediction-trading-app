@@ -1,7 +1,7 @@
 import { serve } from "bun";
 import index from "./index.html";
 import { connectDB } from "./config/db";
-import { signup } from "./routes/auth";
+import { login, signup } from "./routes/auth";
 
 await connectDB();
 const server = serve({
@@ -25,6 +25,9 @@ const server = serve({
     },
     "/api/auth/signup": {
       POST: signup
+    },
+    "/api/auth/login": {
+      POST: login
     }
   },
 
