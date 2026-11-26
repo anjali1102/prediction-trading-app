@@ -1,7 +1,7 @@
 import { serve } from "bun";
 import index from "./index.html";
 import { connectDB } from "./config/db";
-import { login, signup } from "./routes/auth";
+import { login, onRamp, profile, signup } from "./routes/auth";
 
 await connectDB();
 const server = serve({
@@ -28,7 +28,13 @@ const server = serve({
     },
     "/api/auth/login": {
       POST: login
-    }
+    },
+    "/api/auth/onramp": {
+      POST: onRamp
+    },
+    "/api/auth/profile": {
+      GET: profile
+    },
   },
 
   development: process.env.NODE_ENV !== "production" && {
